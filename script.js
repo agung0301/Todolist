@@ -34,8 +34,7 @@ form.addEventListener('submit', function(event) {
 // Membuat elemen task
 function createTask(text, priorityLevel, isDone = false) {
     const li = document.createElement('li');
-    li.className = 'list-group-item d-flex justify-content-between align-items-center';
-
+    li.className = 'list-group-item d-flex justify-content-between align-items-center mb-2 shadow-sm border-start border-4 border-primary';
     const span = document.createElement('span');
     span.textContent = text;
     li.appendChild(span);

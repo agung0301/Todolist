@@ -4,6 +4,9 @@
     align-items: center;
     gap: 15px;
     padding: 12px 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px !important;
+    margin-bottom: 10px;
 }
 
 .list-group-item span:first-child {
@@ -27,5 +30,6 @@
 }
 
 #done-list .list-group-item {
-    background-color: #f8f9fa;
+    background-color: #e9ecef;
+    opacity: 0.8;
 }
