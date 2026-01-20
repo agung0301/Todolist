@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,6 +8,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body class="bg-light">
 
     <div class="container py-5">
@@ -27,7 +29,12 @@
                     <form id="todo-form">
                         <div class="mb-3">
                             <label for="todo-input" class="form-label fw-bold">Task Description</label>
-                            <textarea class="form-control" name="todo-input" id="todo-input" rows="3" placeholder="Add a new task..." required></textarea>
+                            <textarea class="form-control" name="todo-input" id="todo-input" rows="3"
+                                placeholder="Add a new task..." required></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="todo-date" class="form-label fw-bold">Deadline</label>
+                            <input type="date" id="todo-date" class="form-control" required>
                         </div>
                         <div class="mb-3">
                             <label for="priority-level" class="form-label fw-bold">Priority Level</label>
@@ -52,7 +59,7 @@
                     </div>
                     <div class="card-body">
                         <div id="todo-list">
-                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -64,7 +71,7 @@
                     </div>
                     <div class="card-body">
                         <div id="done-list">
-                            </div>
+                        </div>
                     </div>
                 </div>
             </section>
@@ -77,4 +84,5 @@
 
     <script src="script.js"></script>
 </body>
+
 </html>
