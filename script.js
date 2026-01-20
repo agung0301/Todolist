@@ -8,11 +8,11 @@ const clearButton = document.getElementById('delete-all-btn');
 const displayDate = document.getElementById('display-date');
 const deadlineDate = document.getElementById('todo-date');
 
-// Menampilkan Waktu Utama secara realtime (Jam Dinding)
+// Menampilkan Waktu Utama secara realtime 
 function updateWaktu() {
     const sekarang = new Date();
     const options = { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' };
-    const formattedDate = sekarang.toLocaleDateString('id-ID', options);
+    const formattedDate = sekarang.toLocaleDateString('en-US', options);
     displayDate.textContent = formattedDate;
 }
 setInterval(updateWaktu, 1000);
@@ -28,7 +28,7 @@ form.addEventListener('submit', function(event) {
 
     // Membuat stempel waktu buat saat klik tombol Add
     const sekarang = new Date();
-    const waktuBuat = sekarang.toLocaleString('id-ID', { 
+    const waktuBuat = sekarang.toLocaleString('en-US', { 
         day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' 
     });
 
@@ -43,6 +43,17 @@ form.addEventListener('submit', function(event) {
 // membuat elemen Task
 function createTask(text, priorityLevel, isDone = false, deadline = "", createdAt = "") {
     const li = document.createElement('li');
+
+    let isOverdue = false;
+    if (deadline && !isDone) {
+        const tglDeadline = new Date(deadline);
+        const tglSekarang = new Date();
+        tglSekarang.setHours(0, 0, 0, 0);
+        
+        if (tglDeadline < tglSekarang) {
+            isOverdue = true;
+        }
+    }
     
     // penentuan warna border berdasarkan prioritas
     let borderColor = 'border-primary';
@@ -52,12 +63,17 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
 
     li.className = `list-group-item d-flex justify-content-between align-items-center mb-2 shadow-sm border-start border-4 ${borderColor}`;
 
+    // background merah jika deadline sudah lewat
+    if (isOverdue) {
+        li.style.backgroundColor = '#ffe9e9'; 
+    }
+
     const contentWrapper = document.createElement('div');
     contentWrapper.className = 'flex-grow-1';
 
     const span = document.createElement('span');
-    span.textContent = text;
     span.className = 'fw-bold d-block';
+    span.innerHTML = text + (isOverdue ? ' <span class="text-danger" style="font-size: 0.8rem;">(TERLAMBAT)</span>' : '');
     if (isDone) span.style.textDecoration = 'line-through';
 
     const infoWaktu = document.createElement('small');
