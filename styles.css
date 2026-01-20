@@ -1,0 +1,31 @@
+.list-group-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    padding: 12px 15px;
+}
+
+.list-group-item span:first-child {
+    flex: 1;
+    word-wrap: break-word;
+}
+
+.list-group-item .badge {
+    min-width: 60px;
+    text-align: center;
+    padding: 6px 10px;
+}
+
+.list-group-item .btn {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
+
+.list-group-item button + button {
+    margin-left: 8px;
+}
+
+#done-list .list-group-item {
+    background-color: #f8f9fa;
+}
