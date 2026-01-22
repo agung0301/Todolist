@@ -122,18 +122,64 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
     deleteButton.className = 'btn btn-danger btn-sm ms-2';
-    deleteButton.onclick = () => li.remove();
-    li.appendChild(deleteButton);
 
+    deleteButton.onclick = () => {
+        Swal.fire({
+            title: "Hapus tugas ini?",
+            text: "Tugas yang dihapus tidak bisa dikembalikan!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#6c757d",
+            confirmButtonText: "Ya, Hapus!",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+
+            if (result.isConfirmed) {
+                li.remove();
+
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 2000,
+                    timerProgressBar: true
+                });
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Tugas berhasil dihapus'
+                });
+            }
+        });
+    };
+
+    li.appendChild(deleteButton);
     return li;
 }
 
 // Fitur Delete All
 clearButton.addEventListener('click', function () {
-    if (confirm('Hapus semua tugas di kedua kolom?')) {
-        todoList.innerHTML = '';
-        doneList.innerHTML = '';
-    }
+    Swal.fire({
+        title: 'Hapus Semua Tugas?',
+        text: "Tindakan ini tidak bisa dibatalkan!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, hapus semua!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            todoList.innerHTML = '';
+            doneList.innerHTML = '';
+
+            Swal.fire(
+                'Berhasil!',
+                'Semua tugas telah dibersihkan.',
+                'success'
+            );
+        }
+    });
 });
 // Fitur Pencarian
 
