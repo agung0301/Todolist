@@ -7,6 +7,9 @@ const doneList = document.getElementById('done-list');
 const clearButton = document.getElementById('delete-all-btn');
 const displayDate = document.getElementById('display-date');
 const deadlineDate = document.getElementById('todo-date');
+const searchInput = document.getElementById('search-input');
+const searchIcon = document.getElementById('search-icon');
+const loadingSpinner = document.getElementById('loading-spinner');
 
 // Menampilkan Waktu Utama secara realtime 
 function updateWaktu() {
@@ -19,22 +22,22 @@ setInterval(updateWaktu, 1000);
 updateWaktu();
 
 // Menambahkan task baru saat Form di-submit
-form.addEventListener('submit', function(event) {
+form.addEventListener('submit', function (event) {
     event.preventDefault();
 
     const taskText = input.value.trim();
     const taskPriority = priority.value;
-    const taskDeadline = deadlineDate.value; 
+    const taskDeadline = deadlineDate.value;
 
     // Membuat stempel waktu buat saat klik tombol Add
     const sekarang = new Date();
-    const waktuBuat = sekarang.toLocaleString('en-US', { 
-        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' 
+    const waktuBuat = sekarang.toLocaleString('en-US', {
+        day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit'
     });
 
     const task = createTask(taskText, taskPriority, false, taskDeadline, waktuBuat);
     todoList.appendChild(task);
-    
+
     input.value = '';
     priority.value = '';
     deadlineDate.value = '';
@@ -49,12 +52,12 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
         const tglDeadline = new Date(deadline);
         const tglSekarang = new Date();
         tglSekarang.setHours(0, 0, 0, 0);
-        
+
         if (tglDeadline < tglSekarang) {
             isOverdue = true;
         }
     }
-    
+
     // penentuan warna border berdasarkan prioritas
     let borderColor = 'border-primary';
     if (priorityLevel === 'High') borderColor = 'border-danger';
@@ -65,7 +68,7 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
 
     // background merah jika deadline sudah lewat
     if (isOverdue) {
-        li.style.backgroundColor = '#ffe9e9'; 
+        li.style.backgroundColor = '#ffe9e9';
     }
 
     const contentWrapper = document.createElement('div');
@@ -79,7 +82,7 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
     const infoWaktu = document.createElement('small');
     infoWaktu.className = 'text-muted d-block';
     infoWaktu.style.fontSize = '0.75rem';
-    
+
     const deadlineTxt = deadline ? ` | Deadline: ${deadline}` : " | No Deadline";
     infoWaktu.textContent = `Dibuat: ${createdAt}${deadlineTxt}`;
 
@@ -98,7 +101,7 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
         const doneButton = document.createElement('button');
         doneButton.textContent = 'Done';
         doneButton.className = 'btn btn-success btn-sm ms-2';
-        doneButton.addEventListener('click', function() {
+        doneButton.addEventListener('click', function () {
             li.remove();
             const taskSelesai = createTask(text, priorityLevel, true, deadline, createdAt);
             doneList.appendChild(taskSelesai);
@@ -108,7 +111,7 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
         const undoneButton = document.createElement('button');
         undoneButton.textContent = 'Undone';
         undoneButton.className = 'btn btn-primary btn-sm ms-2';
-        undoneButton.addEventListener('click', function() {
+        undoneButton.addEventListener('click', function () {
             li.remove();
             const taskBack = createTask(text, priorityLevel, false, deadline, createdAt);
             todoList.appendChild(taskBack);
@@ -126,9 +129,46 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
 }
 
 // Fitur Delete All
-clearButton.addEventListener('click', function() {
+clearButton.addEventListener('click', function () {
     if (confirm('Hapus semua tugas di kedua kolom?')) {
         todoList.innerHTML = '';
         doneList.innerHTML = '';
+    }
+});
+// Fitur Pencarian
+
+let debounceTimer;
+function filterTasks() {
+    clearTimeout(debounceTimer);
+
+    searchIcon.classList.add('d-none');
+    loadingSpinner.classList.remove('d-none');
+
+    debounceTimer = setTimeout(() => {
+        const filter = searchInput.value.toLowerCase();
+        const allTasks = document.querySelectorAll('.list-group-item');
+
+        allTasks.forEach(task => {
+            const taskText = task.querySelector('span').textContent.toLowerCase();
+
+            if (taskText.includes(filter)) {
+                task.style.setProperty('display', 'flex', 'important');
+            } else {
+                task.style.setProperty('display', 'none', 'important');
+            }
+        });
+
+        searchIcon.classList.remove('d-none');
+        loadingSpinner.classList.add('d-none');
+
+    }, 500);
+}
+
+
+searchInput.addEventListener('input', filterTasks);
+searchButton.addEventListener('click', filterTasks);
+searchInput.addEventListener('keypress', function (e) {
+    if (e.key === 'Enter') {
+        filterTasks();
     }
 });
