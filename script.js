@@ -36,7 +36,7 @@ function updateCounters() {
     let totalOverdue = 0;
     const allTodoItems = todoList.querySelectorAll('li');
     allTodoItems.forEach(item => {
-        if (item.innerHTML.includes('(OVERDUE)')) {
+        if (item.innerHTML.includes('OVERDUE')) {
             totalOverdue++;
         }
     });
