@@ -14,6 +14,9 @@ const searchButton = document.getElementById('search-button');
 const soundDone = document.getElementById('sound-pop');
 const soundUndone = document.getElementById('sound-undo');
 const soundDelete = document.getElementById('sound-swoosh');
+const todoCount = document.getElementById('todo-count');
+const doneCount = document.getElementById('done-count');
+const overdueCount = document.getElementById('overdue-count');
 
 // Menampilkan Waktu Utama secara realtime 
 function updateWaktu() {
@@ -24,6 +27,24 @@ function updateWaktu() {
 }
 setInterval(updateWaktu, 1000);
 updateWaktu();
+
+// Menghitung jumlah task dan task selesai
+function updateCounters() {
+    const totalTodo = todoList.children.length;
+    const totalDone = doneList.children.length;
+
+    let totalOverdue = 0;
+    const allTodoItems = todoList.querySelectorAll('li');
+    allTodoItems.forEach(item => {
+        if (item.innerText.includes('OVERDUE')) {
+            totalOverdue++;
+        }
+    });
+
+    todoCount.textContent = totalTodo;
+    doneCount.textContent = totalDone;
+    overdueCount.textContent = totalOverdue;
+}
 
 // Menambahkan task baru saat Form di-submit
 form.addEventListener('submit', function (event) {
@@ -41,6 +62,8 @@ form.addEventListener('submit', function (event) {
 
     const task = createTask(taskText, taskPriority, false, taskDeadline, waktuBuat);
     todoList.appendChild(task);
+
+    updateCounters();
 
     input.value = '';
     priority.value = '';
@@ -80,7 +103,7 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
 
     const span = document.createElement('span');
     span.className = 'fw-bold d-block';
-    span.innerHTML = text + (isOverdue ? ' <span class="text-danger" style="font-size: 0.8rem;">(TERLAMBAT)</span>' : '');
+    span.innerHTML = text + (isOverdue ? ' <span class="badge rounded-pill bg-danger-subtle text-danger ms-2" style="font-size: 0.6rem;">OVERDUE</span>' : '');
     if (isDone) span.style.textDecoration = 'line-through';
 
     const infoWaktu = document.createElement('small');
@@ -112,6 +135,8 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
             li.remove();
             const taskSelesai = createTask(text, priorityLevel, true, deadline, createdAt);
             doneList.appendChild(taskSelesai);
+
+            updateCounters();
         });
         li.appendChild(doneButton);
     } else {
@@ -125,8 +150,11 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
             li.remove();
             const taskBack = createTask(text, priorityLevel, false, deadline, createdAt);
             todoList.appendChild(taskBack);
+
+            updateCounters();
         });
         li.appendChild(undoneButton);
+
     }
 
     const deleteButton = document.createElement('button');
@@ -149,6 +177,8 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
                 soundDelete.currentTime = 0;
                 soundDelete.play();
                 li.remove();
+
+                updateCounters();
 
                 const Toast = Swal.mixin({
                     toast: true,
@@ -186,6 +216,8 @@ clearButton.addEventListener('click', function () {
             soundDelete.play();
             todoList.innerHTML = '';
             doneList.innerHTML = '';
+
+            updateCounters();
 
             Swal.fire(
                 'Berhasil!',
