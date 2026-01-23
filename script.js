@@ -36,7 +36,7 @@ function updateCounters() {
     let totalOverdue = 0;
     const allTodoItems = todoList.querySelectorAll('li');
     allTodoItems.forEach(item => {
-        if (item.innerText.includes('OVERDUE')) {
+        if (item.innerHTML.includes('(OVERDUE)')) {
             totalOverdue++;
         }
     });
@@ -64,6 +64,7 @@ form.addEventListener('submit', function (event) {
     todoList.appendChild(task);
 
     updateCounters();
+    saveToLocalStorage();
 
     input.value = '';
     priority.value = '';
@@ -137,6 +138,7 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
             doneList.appendChild(taskSelesai);
 
             updateCounters();
+            saveToLocalStorage();
         });
         li.appendChild(doneButton);
     } else {
@@ -152,6 +154,7 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
             todoList.appendChild(taskBack);
 
             updateCounters();
+            saveToLocalStorage();
         });
         li.appendChild(undoneButton);
 
@@ -179,6 +182,7 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
                 li.remove();
 
                 updateCounters();
+                saveToLocalStorage();
 
                 const Toast = Swal.mixin({
                     toast: true,
@@ -218,6 +222,7 @@ clearButton.addEventListener('click', function () {
             doneList.innerHTML = '';
 
             updateCounters();
+            saveToLocalStorage();
 
             Swal.fire(
                 'Berhasil!',
@@ -264,3 +269,36 @@ searchInput.addEventListener('keypress', function (e) {
         filterTasks();
     }
 });
+
+function saveToLocalStorage() {
+    const tasks = [];
+
+    document.querySelectorAll('.list-group-item').forEach(li => {
+        tasks.push({
+            text: li.querySelector('span').innerText.replace(' OVERDUE', '').trim(),
+            priority: li.querySelector('.badge:not(.bg-danger-subtle)').textContent,
+            isDone: li.parentElement.id === 'done-list',
+            deadline: li.querySelector('small').textContent.split('Deadline: ')[1] || "",
+            createdAt: li.querySelector('small').textContent.split('|')[0].replace('Dibuat: ', '').trim()
+        });
+    });
+
+    localStorage.setItem('myTasks', JSON.stringify(tasks));
+}
+
+function loadFromLocalStorage() {
+    const savedTasks = JSON.parse(localStorage.getItem('myTasks')) || [];
+
+    savedTasks.forEach(task => {
+        const taskElement = createTask(task.text, task.priority, task.isDone, task.deadline, task.createdAt);
+        if (task.isDone) {
+            doneList.appendChild(taskElement);
+        } else {
+            todoList.appendChild(taskElement);
+        }
+    });
+
+    updateCounters();
+}
+
+loadFromLocalStorage();
