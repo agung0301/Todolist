@@ -10,6 +10,10 @@ const deadlineDate = document.getElementById('todo-date');
 const searchInput = document.getElementById('search-input');
 const searchIcon = document.getElementById('search-icon');
 const loadingSpinner = document.getElementById('loading-spinner');
+const searchButton = document.getElementById('search-button');
+const soundDone = document.getElementById('sound-pop');
+const soundUndone = document.getElementById('sound-undo');
+const soundDelete = document.getElementById('sound-swoosh');
 
 // Menampilkan Waktu Utama secara realtime 
 function updateWaktu() {
@@ -102,6 +106,9 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
         doneButton.textContent = 'Done';
         doneButton.className = 'btn btn-success btn-sm ms-2';
         doneButton.addEventListener('click', function () {
+            soundDone.currentTime = 0;
+            soundDone.play();
+
             li.remove();
             const taskSelesai = createTask(text, priorityLevel, true, deadline, createdAt);
             doneList.appendChild(taskSelesai);
@@ -112,6 +119,9 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
         undoneButton.textContent = 'Undone';
         undoneButton.className = 'btn btn-primary btn-sm ms-2';
         undoneButton.addEventListener('click', function () {
+            soundUndone.currentTime = 0;
+            soundUndone.play();
+
             li.remove();
             const taskBack = createTask(text, priorityLevel, false, deadline, createdAt);
             todoList.appendChild(taskBack);
@@ -136,6 +146,8 @@ function createTask(text, priorityLevel, isDone = false, deadline = "", createdA
         }).then((result) => {
 
             if (result.isConfirmed) {
+                soundDelete.currentTime = 0;
+                soundDelete.play();
                 li.remove();
 
                 const Toast = Swal.mixin({
@@ -170,6 +182,8 @@ clearButton.addEventListener('click', function () {
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
+            soundDelete.currentTime = 0;
+            soundDelete.play();
             todoList.innerHTML = '';
             doneList.innerHTML = '';
 
